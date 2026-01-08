@@ -1,10 +1,10 @@
 package com.dev.cart.prject.DevCart.repositories;
 
-import com.dev.cart.prject.DevCart.models.Category;
+import com.dev.cart.prject.DevCart.models.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-@Repository
-public interface CategoryRepository extends JpaRepository<Category, Long> {
 
+@Repository
+public interface ProductRepository extends JpaRepository<Product, Long> {
 }

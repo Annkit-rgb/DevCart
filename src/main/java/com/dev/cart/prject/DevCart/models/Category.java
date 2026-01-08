@@ -1,9 +1,14 @@
 package com.dev.cart.prject.DevCart.models;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "category")
+@Table(name = "categories")
+@Data@NoArgsConstructor
+@AllArgsConstructor
 public class Category {
 
     @Id
