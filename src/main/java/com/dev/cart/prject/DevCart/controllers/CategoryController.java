@@ -51,7 +51,7 @@ private CategoryRepository categoryRepository;
         }
 
         if (categoryRepository.existsByName(category.getName())) {
-             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+             return ResponseEntity.status(HttpStatus.CONFLICT).build();
          }
 
         // optional: generate slug if you use it
@@ -70,10 +70,73 @@ private CategoryRepository categoryRepository;
 
 
 
+    //Update Category
+    @PutMapping("/admin/categories/{id}")
+    public ResponseEntity<Category> updateCategory(@PathVariable Long id,
+                                                   @RequestBody Category updated) {
+
+        Optional<Category> optional = categoryRepository.findById(id);
+        if (optional.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Category existing = optional.get();
+
+        // basic validation
+        if (updated.getName() == null || updated.getName().isBlank()
+                || updated.getDescription() == null || updated.getDescription().isBlank()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        // duplicate check by name (ignore same record)
+        if (!existing.getName().equals(updated.getName())
+                && categoryRepository.existsByName(updated.getName())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
+        // apply changes
+        existing.setName(updated.getName());
+        existing.setDescription(updated.getDescription());
+
+        // regenerate slug if name changed or slug empty
+        String slug = updated.getSlug();
+        if (slug == null || slug.isBlank() || !existing.getName().equals(updated.getName())) {
+            slug = updated.getName()
+                    .toLowerCase()
+                    .replaceAll("[^a-z0-9]+", "-")
+                    .replaceAll("(^-|-$)", "");
+        }
+        existing.setSlug(slug);
+
+        Category saved = categoryRepository.save(existing);
+        return ResponseEntity.ok(saved);
+    }
+
+
+
+    //Delete categories
+    @DeleteMapping("/admin/categories/{id}")
+    public ResponseEntity <Category> deleteCategory(@PathVariable Long id) {
+        if (categoryRepository.existsById(id)) {
+            categoryRepository.deleteById(id);
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.notFound().build();
+
+    }
+
+
+
+
+
+    }
 
 
 
 
 
 
-}
+
+
+
