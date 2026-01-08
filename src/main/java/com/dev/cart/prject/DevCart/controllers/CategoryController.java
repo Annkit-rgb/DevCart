@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -27,17 +28,18 @@ private CategoryRepository categoryRepository;
         return  categoryRepository.findAll();
     }
 
-    //Get All Categories Via Id
     @GetMapping("/public/categories/{id}")
-    public ResponseEntity <Category> getCategoriesById(@PathVariable Long id) {
-       Optional<Category> category = categoryRepository.findById(id);
+    public ResponseEntity<?> getCategoriesById(@PathVariable Long id) {
+        Optional<Category> category = categoryRepository.findById(id);
 
-       if(category.isPresent()) {
-            return ResponseEntity.ok().body(category.get());
-       }else  {
-            return ResponseEntity.notFound().build();
-       }
+        if (category.isPresent()) {
+            return ResponseEntity.ok(category.get());
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("message", "Category not found with this id " + id));
+        }
     }
+
 
 
     //create category
