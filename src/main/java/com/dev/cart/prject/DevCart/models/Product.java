@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class Product {
 
     @ManyToOne
-    @JoinColumn(name = "category_id")
+    @JoinColumn
     private  Category category;
 
     @Id
